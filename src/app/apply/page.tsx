@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import api from "@/lib/api";
 import AuthGuard from "@/components/AuthGuard";
+import { useState, useRef } from "react";
 
 export default function ApplyPage() {
   const [salarySlip, setSalarySlip] = useState<File | null>(null);
 
   const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [form, setForm] = useState({
     pan: "",
@@ -65,6 +66,10 @@ export default function ApplyPage() {
       });
 
       setSalarySlip(null);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } catch (err: any) {
       alert(err.response?.data?.message || "Error Applying Loan");
     } finally {
@@ -276,6 +281,7 @@ export default function ApplyPage() {
                 </p>
 
                 <input
+                  ref={fileInputRef}
                   type="file"
                   accept=".pdf,.jpg,.jpeg,.png"
                   onChange={(e) => setSalarySlip(e.target.files?.[0] || null)}
